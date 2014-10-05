@@ -1,0 +1,16 @@
+---
+galaxy_info:
+  author: John Mille
+  description: Role to enable RiakCS cluster HA and LB
+  company: Eucalyptus
+  min_ansible_version: 1.6
+  platforms:
+  - name: EL
+    versions:
+    - 6
+  categories:
+  - cloud
+  - clustering
+  - monitoring
+  - system
+dependencies: []

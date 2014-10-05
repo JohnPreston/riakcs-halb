@@ -1,0 +1,42 @@
+#
+# The default server
+#
+
+upstream riakcs_cluster_hosts {
+
+{% for node in groups['riakcs_nodes'] %}
+   server {{ hostvars[node]['ansible_' + vnet_defined]['ipv4']['address'] }}:{{ riakcs_default_port }};
+{% endfor %}
+
+}
+
+
+server {
+    listen       {{ riakcs_cluster_http_port }} default_server;
+    {% if nginx_riakcs_server_name and nginx_riakcs_server_name|length > 0 %}
+    server_name  {{ nginx_riakcs_server_name }};
+    {% else %}
+    server_name  _;
+    {% endif %}
+
+    #charset koi8-r;
+
+    #access_log  logs/host.access.log  main;
+
+    location / {
+    proxy_set_header Host $http_host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_redirect off;
+
+    proxy_connect_timeout      90;
+    proxy_send_timeout         90;
+    proxy_read_timeout         90;
+    proxy_buffer_size	       128k;
+    proxy_buffers	       4 256k;
+    proxy_busy_buffers_size    256k;
+    proxy_temp_file_write_size 256k;
+    proxy_http_version	       1.1;
+
+    proxy_pass http://riakcs_cluster_hosts;
+  }
+}

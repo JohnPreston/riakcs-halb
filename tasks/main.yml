@@ -1,0 +1,60 @@
+---
+# tasks file for riakcs-halb
+
+- name: Setup NGINX repo
+  yum: name="{{ nginx_repo_url }}" state=present
+  tags:
+  - riakcs_halb
+  - packages
+
+- name: Setup NGINX
+  yum: name=nginx state=present
+  tags:
+  - riakcs_halb
+  - packages
+
+- name: Configure NGINX core
+  template: src=nginx.conf.j2 dest="{{ nginx_core_conf_path }}"
+  tags:
+  - riakcs_halb
+  - configure
+
+- name: Remove all default config file
+  shell: rm -rfv "{{ nginx_configs_path }}{{ item }}"
+  with_items:
+  - default.conf
+  - example_ssl.conf
+  tags:
+  - riakcs_halb
+  - cleanup
+
+- name: Configure NGINX riakcs config
+  template: src=riakcs.conf.j2 dest="{{ nginx_configs_path }}{{ nginx_riakcs_config_name }}"
+  tags:
+  - riakcs_halb
+  - configure
+
+- name: Start NGINX
+  service: name=nginx state=restarted
+  tags:
+  - riakcs_halb
+
+- name: Setup Keepalived | VRRP
+  yum: name=keepalived state=present
+  tags:
+  - riakcs_halb
+  - packages
+  - vrrp
+
+- name: Configure keepalived
+  template: src=keepalived.conf.j2 dest="{{ keepalived_configs_dir }}{{ keepalived_conf_name }}"
+  tags:
+  - riakcs_halb
+  - packages
+  - vrrp
+
+- name: Start KeepAlived
+  service: name=keepalived state=restarted
+  tags:
+  - riakcs_halb
+  - vrrp

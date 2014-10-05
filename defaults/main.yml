@@ -1,0 +1,19 @@
+---
+# defaults file for riakcs-halb
+
+nginx_repo_url: http://nginx.org/packages/centos/6/noarch/RPMS/nginx-release-centos-6-0.el6.ngx.noarch.rpm
+
+riakcs_cluster_http_port: 8081
+riakcs_cluster_https_port: 8082
+
+nginx_gzip: false
+
+riakcs_default_port: 8080
+nginx_riakcs_server_name:
+
+nginx_core_conf_path: /etc/nginx/nginx.conf
+nginx_configs_path: /etc/nginx/conf.d/
+nginx_riakcs_config_name: riakcs.conf
+
+keepalived_configs_dir: /etc/keepalived/
+keepalived_conf_name: keepalived.conf
